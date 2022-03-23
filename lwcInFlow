@@ -1,0 +1,128 @@
+Html (flowDemoLwc)
+-------------------------------
+<template>
+<div class="mainContainer slds-p-around_large">
+    <div class="heading slds-p-around_medium slds-align_absolute-center">
+        <p><b>LWC COMPONENT INSIDE FLOW</b></p>
+    </div>
+    <div class="section slds-p-around_medium">
+        <lightning-input label="Enter user name"  type="string" value={lwc_userName} name="lwc_userName"></lightning-input>
+        <lightning-input label="Enter isCheck" type="boolean" value={lwc_isChk}  name="lwc_isChk"></lightning-input>
+        <lightning-input label="date input" type="date"  value={lwc_date} name="lwc_date"></lightning-input> 
+        <lightning-input label="date time " type="datetime" value={lwc_dateTime} name="lwc_dateTime"></lightning-input> 
+        <div class="slds-p-top_medium slds-p-bottom_medium">
+            <lightning-button class="btn" variant="brand"  label="Next" onclick={newScreen}></lightning-button>
+        </div>
+        
+    </div>
+</div>
+
+</template>
+---------------------------------------------
+js
+_______________________________________________________
+
+
+import { LightningElement, api ,track } from 'lwc';
+import {
+    FlowAttributeChangeEvent,
+    FlowNavigationNextEvent,
+} from 'lightning/flowSupport';
+
+
+export default class DemoLWCFlow extends LightningElement {
+    @track uname=''
+    @track isCheck;
+    @track lwc_userName;
+    @track lwc_isChk;
+    @track lwc_date
+    @track lwc_dateTime
+    @api get UserNameFLowProperty()
+    {
+        return this.lwc_userName;
+    }
+  
+    set UserNameFLowProperty(val)
+    {
+        this.lwc_userName=val;
+    }
+    @api get isCheckFLowProperty()
+    { return this.lwc_isChk;}
+    set isCheckFLowProperty(e)
+    {this.lwc_isChk=e;}
+    @api get dateFLowProperty()
+    {return this.lwc_date;}
+    set dateFLowProperty(e)
+    {
+        this.lwc_date=e;
+    }
+    @api get dateTimeFLowProperty()
+    {return this.lwc_dateTime;}
+    set dateTimeFLowProperty(e)
+    {
+        this.lwc_dateTime=e;
+    }
+    /*changeValueEvent(e)
+    {
+        this.uname=e.target.value;
+    }
+    changeValueEvent2(e)
+    {
+        this.isCheck=e.target.value;
+    }*/
+    newScreen(e)
+    {   
+        var inp=this.template.querySelectorAll("lightning-input");
+        inp.forEach(function(element){
+            if(element.name=="lwc_userName")
+                this.lwc_userName=element.value;
+            else if(element.name=="lwc_isChk")
+                this.lwc_isChk=element.value;
+                else if(element.name=="lwc_date")
+                this.lwc_date=element.value;
+                else if(element.name=="lwc_dateTime")
+                this.lwc_dateTime=element.value;
+        },this);
+
+        //We need to assign attribute values
+        const attvalues1=new FlowAttributeChangeEvent('UserNameFLowProperty',this.lwc_userName);
+        this.dispatchEvent(attvalues1);
+        const attvalues2=new FlowAttributeChangeEvent('isCheckFLowProperty',this.lwc_isChk);
+        this.dispatchEvent(attvalues2);
+        const attvalues3=new FlowAttributeChangeEvent('dateFLowProperty',this.lwc_date);
+        this.dispatchEvent(attvalues3);
+        const attvalues4=new FlowAttributeChangeEvent('dateTimeFLowProperty',this.lwc_dateTime);
+        this.dispatchEvent(attvalues4);
+        //we need to navigate away
+        const navAtt=new FlowNavigationNextEvent();
+        this.dispatchEvent(navAtt);
+    }
+}
+----------------------------------------------------------------------------
+
+meta 
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>demoLWCFlow</masterLabel>
+    <targets>
+   
+        <target>lightning__FlowScreen</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightningCommunity__Page</target>
+     </targets>
+
+     <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="UserNameFLowProperty" type="String" label="Enter Usr Name"/>
+            <property name="isCheckFLowProperty" type="boolean" label="Enter isChk"/>
+            <property name="dateFLowProperty" type="date" label="Enter date"/>
+            <property name="dateTimeFLowProperty" type="datetime" label="Enter date time"/>
+        </targetConfig>
+    </targetConfigs>
+
+</LightningComponentBundle>
+-------------------------------------------------
